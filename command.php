@@ -1,30 +1,37 @@
 <?php
 include 'config.php';
-$result = mysqli_query($connect, "SELECT * FROM data_buku");
+$result = mysqli_query($connect, "SELECT * FROM anggota_kartar");
 $no = 1;
-while ($row = mysqli_fetch_array($result)) {
-    $tgl1 = $row['tanggal'];
-    $tgl2 = date('Y-m-d', strtotime($row['hari_pinjam'], strtotime($tgl1)));
-    echo "<tr>";
-    echo "<th>" . $no . "</th>";
-    echo "<td>" . $row['nama_siswa'] . "</td>";
-    echo "<td>" . $row['induk_siswa'] . "</td>";
-    echo "<td>" . $row['kelas_siswa'] . "</td>";
-    echo "<td>" . $row['nama_buku'] . "</td>";
-    echo "<td>" . $row['tanggal'] . "</td>";
-    echo "<td>" . $tgl2 . "</td>";
-    echo "<td>";
-    echo "<a href='CRUD/hapusorder.php?induk_siswa=" . $row['induk_siswa'] . "' Onclick=\"return confirm('Apakah Peminjaman Ini Selesai ?')\">"; ?>
-    <button type="button" class="btn btn-info" style="--bs-btn-padding-y: .10rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Selesai</button>
-<?php "</a>";
-    echo "</td>";
-    echo "</tr>";
-    $no++;
+while($row = mysqli_fetch_array($result))
+{
+	echo "<tr>";
+	echo "<td align=center>".$no."</td>";
+	echo "<td>".$row['no_ktp']."</td>";
+	echo "<td>".$row['nama_anak']."</td>";
+	echo "<td>".$row['alamat']."</td>";
+	echo "<td>".$row['no_tlp']."</td>";
+	echo "</td><td>";
+	if($row['photo']!=null){
+	echo "<img src='photo/".$row['photo']."' width=100 height=100>";
+	} else{
+	echo "";
+	}
+	echo "<td align=center>".$row['jenis_kartar']."</td>";
+	$ambil=mysqli_query($connect,"select * from jabatan_kartar where no_ktp='$row[no_ktp]'"); 
+	$data=mysqli_fetch_array($ambil);
+	echo "<td>";
+	echo "<a href='form_edit.php?no_ktp=".$row['no_ktp']."'>Edit</a> | ";
+	echo "<a href='hapus_kartar.php?no_ktp=".$row['no_ktp']."' Onclick=\"return confirm('Anda Yakin Menghapus?')\">Hapus</a> | ";
+	echo "<a href='donlot.php?photo=$row[photo]'>Download</a>";
+	echo "</td>";
+	echo "</tr>";
+	$no++;
 }
 
 mysqli_close($connect);
 ?>
 
-</tbody>
-</table>
-<h3>Total Peminjam Adalah : <?php echo mysqli_num_rows($result) ?></h3>
+</tbody></table>
+<p>Jumlah Anggota Kartar : <?php echo mysqli_num_rows($result) ?></p>
+</body>
+</html>
